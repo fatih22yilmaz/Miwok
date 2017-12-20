@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,25 +29,43 @@ public class MainActivity extends AppCompatActivity {
 
         // Set the content of the activity to use the activity_main.xml layout file
         setContentView(R.layout.activity_main);
+
+        TextView numbersTextView = (TextView) findViewById(R.id.numbers);
+        assert numbersTextView != null;
+        numbersTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, NumbersActivity.class));
+            }
+        });
+
+        TextView colorsTextView = (TextView) findViewById(R.id.colors);
+        assert colorsTextView != null;
+        colorsTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, ColorsActivity.class));
+            }
+        });
+
+        TextView familyTextView = (TextView) findViewById(R.id.family);
+        assert familyTextView != null;
+        familyTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, FamilyActivity.class));
+            }
+        });
+
+        TextView phrasesTextView = (TextView) findViewById(R.id.phrases);
+        assert phrasesTextView != null;
+        phrasesTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, PhrasesActivity.class));
+            }
+        });
+
     }
 
-    public void openNumbersActivity(View view) {
-        Intent i = new Intent(this, NumbersActivity.class);
-        startActivity(i);
-    }
-
-    public void openColorsActivity(View view) {
-        Intent i = new Intent(this, ColorsActivity.class);
-        startActivity(i);
-    }
-
-    public void openPhrasesActivity(View view) {
-        Intent i = new Intent(this, PhrasesActivity.class);
-        startActivity(i);
-    }
-
-    public void openFamilyMembersActivity(View view) {
-        Intent i = new Intent(this, FamilyActivity.class);
-        startActivity(i);
-    }
 }
