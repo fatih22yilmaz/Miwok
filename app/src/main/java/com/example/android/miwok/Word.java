@@ -22,16 +22,22 @@ public class Word {
     private int imageResourceId = NO_IMAGE_PROVIDED;
 
     /**
+     * Audio resource id of the image.
+     */
+    private int audioResourceId;
+
+    /**
      * Create a new word object.
      *
      * @param defaultTranslation is the word in a language that the user is already familiar with (such as English)
      * @param miwokTranslation   is the word in Miwok language.
      * @param imageResourceId    is the id of the image.
      */
-    public Word(String defaultTranslation, String miwokTranslation, int imageResourceId) {
+    Word(String defaultTranslation, String miwokTranslation, int imageResourceId, int audioResourceId) {
         this.defaultTranslation = defaultTranslation;
         this.miwokTranslation = miwokTranslation;
         this.imageResourceId = imageResourceId;
+        this.audioResourceId = audioResourceId;
     }
 
     /**
@@ -40,33 +46,48 @@ public class Word {
      * @param defaultTranslation is the word in a language that the user is already familiar with (such as English)
      * @param miwokTranslation   is the word in Miwok language.
      */
-    public Word(String defaultTranslation, String miwokTranslation) {
+    Word(String defaultTranslation, String miwokTranslation, int audioResourceId) {
         this.defaultTranslation = defaultTranslation;
         this.miwokTranslation = miwokTranslation;
+        this.audioResourceId = audioResourceId;
     }
 
     /**
      * @return Returns the Miwok translation of the word.
      */
-    public String getMiwokTranslation() {
+    String getMiwokTranslation() {
         return this.miwokTranslation;
     }
 
     /**
      * @return Returns the default translation of the word.
      */
-    public String getDefaultTranslation() {
+    String getDefaultTranslation() {
         return this.defaultTranslation;
     }
 
     /**
      * @return Returns the image resource id of the image.
      */
-    public int getImageResourceId() {
-        return imageResourceId;
+    int getImageResourceId() {
+        return this.imageResourceId;
     }
 
-    public boolean hasImage() {
+    int getAudioResourceId() {
+        return this.audioResourceId;
+    }
+
+    boolean hasImage() {
         return imageResourceId != NO_IMAGE_PROVIDED;
+    }
+
+    @Override
+    public String toString() {
+        return "Word{" +
+                "defaultTranslation='" + defaultTranslation + '\'' +
+                ", miwokTranslation='" + miwokTranslation + '\'' +
+                ", imageResourceId=" + imageResourceId +
+                ", audioResourceId=" + audioResourceId +
+                '}';
     }
 }
