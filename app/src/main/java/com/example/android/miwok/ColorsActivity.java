@@ -23,6 +23,7 @@ public class ColorsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.word_list);
 
+
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         onAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
@@ -96,7 +97,6 @@ public class ColorsActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     private void releaseMediaPlayer() {
@@ -119,4 +119,6 @@ public class ColorsActivity extends AppCompatActivity {
         super.onStop();
         releaseMediaPlayer();
     }
+
 }
+

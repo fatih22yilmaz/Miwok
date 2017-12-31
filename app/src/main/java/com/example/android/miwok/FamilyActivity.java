@@ -121,4 +121,5 @@ public class FamilyActivity extends AppCompatActivity {
         super.onStop();
         releaseMediaPlayer();
     }
+
 }

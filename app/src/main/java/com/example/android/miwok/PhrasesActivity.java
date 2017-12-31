@@ -120,4 +120,5 @@ public class PhrasesActivity extends AppCompatActivity {
         super.onStop();
         releaseMediaPlayer();
     }
+
 }
