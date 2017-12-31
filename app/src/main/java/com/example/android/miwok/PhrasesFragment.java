@@ -1,66 +1,74 @@
 package com.example.android.miwok;
 
+
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class PhrasesActivity extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class PhrasesFragment extends Fragment {
     private MediaPlayer mediaPlayer;
-    private MediaPlayer.OnCompletionListener completionListener;
     private AudioManager audioManager;
-    private AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener;
+    private AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            switch (focusChange) {
+                case AudioManager.AUDIOFOCUS_GAIN:
+                    Log.v("Focus Change Listener", "AUDIOFOCUS_GAIN");
+                    mediaPlayer.start();
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS:
+                    Log.v("Focus Change Listener", "AUDIOFOCUS_LOSS");
+                    releaseMediaPlayer();
+                    audioManager.abandonAudioFocus(onAudioFocusChangeListener);
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                    Log.v("Focus Change Listener", "AUDIOFOCUS_LOSS_TRANSIENT");
+                    mediaPlayer.pause();
+                    mediaPlayer.seekTo(0);
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    Log.v("Focus Change Listener", "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+                    mediaPlayer.pause();
+                    mediaPlayer.seekTo(0);
+                    break;
+                default:
+                    //
+            }
+        }
+    };
+    private MediaPlayer.OnCompletionListener completionListener = new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mediaPlayer) {
+            releaseMediaPlayer();
+        }
+    };
+
+    public PhrasesFragment() {
+        // Required empty public constructor
+    }
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.word_list);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.word_list, container, false);
 
-        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-
-        onAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
-
-            @Override
-            public void onAudioFocusChange(int focusChange) {
-                switch (focusChange) {
-                    case AudioManager.AUDIOFOCUS_GAIN:
-                        Log.v("Focus Change Listener", "AUDIOFOCUS_GAIN");
-                        mediaPlayer.start();
-                        break;
-                    case AudioManager.AUDIOFOCUS_LOSS:
-                        Log.v("Focus Change Listener", "AUDIOFOCUS_LOSS");
-                        releaseMediaPlayer();
-                        audioManager.abandonAudioFocus(onAudioFocusChangeListener);
-                        break;
-                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                        Log.v("Focus Change Listener", "AUDIOFOCUS_LOSS_TRANSIENT");
-                        mediaPlayer.pause();
-                        mediaPlayer.seekTo(0);
-                        break;
-                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                        Log.v("Focus Change Listener", "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
-                        mediaPlayer.pause();
-                        mediaPlayer.seekTo(0);
-                        break;
-                    default:
-                        //
-                }
-            }
-        };
-
-        completionListener = new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                releaseMediaPlayer();
-            }
-        };
+        ///////////////////////
+        audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
         final ArrayList<Word> words = new ArrayList<>();
 
@@ -75,9 +83,9 @@ public class PhrasesActivity extends AppCompatActivity {
         words.add(new Word("Let’s go.", "yoowutis", R.raw.phrase_lets_go));
         words.add(new Word("Come here.", "әnni'nem", R.raw.phrase_come_here));
 
-        WordAdapter adapter = new WordAdapter(this, words, R.color.category_phrases);
+        WordAdapter adapter = new WordAdapter(getActivity(), words, R.color.category_phrases);
 
-        ListView listView = (ListView) findViewById(R.id.list);
+        ListView listView = (ListView) rootView.findViewById(R.id.list);
 
         assert listView != null;
         listView.setAdapter(adapter);
@@ -88,16 +96,19 @@ public class PhrasesActivity extends AppCompatActivity {
                 Word entry = words.get(position);
                 Log.v("PhrasesActivity", "Current word: " + entry);
                 releaseMediaPlayer();
+
                 int result = audioManager.requestAudioFocus(onAudioFocusChangeListener,
                         AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 
                 if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                    mediaPlayer = MediaPlayer.create(PhrasesActivity.this, entry.getAudioResourceId());
+                    mediaPlayer = MediaPlayer.create(getActivity(), entry.getAudioResourceId());
                     mediaPlayer.start();
                     mediaPlayer.setOnCompletionListener(completionListener);
                 }
             }
         });
+
+        return rootView;
     }
 
     private void releaseMediaPlayer() {
@@ -116,7 +127,7 @@ public class PhrasesActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         releaseMediaPlayer();
     }

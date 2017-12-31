@@ -15,11 +15,10 @@
  */
 package com.example.android.miwok;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,41 +29,19 @@ public class MainActivity extends AppCompatActivity {
         // Set the content of the activity to use the activity_main.xml layout file
         setContentView(R.layout.activity_main);
 
-        TextView numbersTextView = (TextView) findViewById(R.id.numbers);
-        assert numbersTextView != null;
-        numbersTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, NumbersActivity.class));
-            }
-        });
+        // Find the view pager that will allow the user to swipe between fragments
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
-        TextView colorsTextView = (TextView) findViewById(R.id.colors);
-        assert colorsTextView != null;
-        colorsTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, ColorsActivity.class));
-            }
-        });
+        // Create an adapter that knows which fragment should be shown on each page
+        CategoryAdapter adapter = new CategoryAdapter(getSupportFragmentManager(), MainActivity.this);
 
-        TextView familyTextView = (TextView) findViewById(R.id.family);
-        assert familyTextView != null;
-        familyTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, FamilyActivity.class));
-            }
-        });
+        // Set the adapter onto the view pager
+        assert viewPager != null;
+        viewPager.setAdapter(adapter);
 
-        TextView phrasesTextView = (TextView) findViewById(R.id.phrases);
-        assert phrasesTextView != null;
-        phrasesTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, PhrasesActivity.class));
-            }
-        });
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        assert tabLayout != null;
+        tabLayout.setupWithViewPager(viewPager);
 
     }
 
